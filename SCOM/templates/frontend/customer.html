@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
     <!-- Favicons -->
-<meta name="theme-color" content="#7952b3">
+<!--<meta name="theme-color" content="#7952b3">-->
 
 
     <style>
@@ -38,7 +38,7 @@
   crossorigin="anonymous"></script>
 
   </head>
-  <body>
+  <body class="d-flex flex-column">
     
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
   <div class="container-fluid">
@@ -49,36 +49,132 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#" id="getListLink" >Get List</a>
+          <a class="nav-link active" aria-current="page" href="#" id="getListLink" >Refresh Customer List</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Create New</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Update</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Delete</a>
+          <a class="nav-link active" href="{% url 'swagger-ui' %}">Swagger (OAS 3.0)</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="#">Logout</a>
+          <a class="nav-link active" href="{% url 'redoc' %}">Redoc</a>
         </li>
 
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="#">Update</a>-->
+<!--        </li>-->
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="#">Delete</a>-->
+<!--        </li>-->
+
+        <li class="nav-item">
+          <a class="nav-link active" href="#" id="logout-link">Logout</a>
+        </li>
       </ul>
+
+      <div class="d-flex text-secondary">
+          <h5 class="mx-3">Quantaco Assignment</h5>
+          <p>Harshwardhan Shinde</p>
+        </div>
+
     </div>
   </div>
 </nav>
 
-<main class="container">
-  <div class="bg-light p-5 rounded">
-    <h1>Navbar example</h1>
-    <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it will remain fixed to the top of your browser’s viewport.</p>
-    <a class="btn btn-lg btn-primary" href="/docs/5.0/components/navbar/" role="button">View navbar docs &raquo;</a>
+<main class="flex-shrink-0 container">
+  <div class="row">
+    <div class="col-md-4">
+      <h1>Customer List</h1>
+      <ul id="customerList"></ul>
+    </div>
+
+    <div class="col-md-8">
+      <div id="errorDiv" class="text-danger"></div>
+      <div id="successDiv" class="text-success"></div>
+      <form class="row" id="customerForm">
+        {% csrf_token %}
+        <div class="mb-3 col-md-6">
+          <label for="first_name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="first_name" aria-describedby="first_name_error">
+          <div id="first_name_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-6">
+          <label for="last_name" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="last_name" aria-describedby="last_name_error">
+          <div id="last_name_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label for="date_of_birth" class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="date_of_birth" aria-describedby="date_of_birth_error">
+          <div id="date_of_birth_error" class="form-text text-danger"></div>
+        </div>
+        <div class="mb-3 col-md-4">
+          <label for="phone_number" class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="phone_number" aria-describedby="phone_number_error">
+          <div id="phone_number_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label for="gender" class="form-label">Gender</label>
+          <select id="gender" class="form-select" aria-describedby="gender_error">
+                <option value="">---</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+            </select>
+          <div id="gender_error" class="form-text text-danger"></div>
+        </div>
+
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" aria-describedby="email_error">
+          <div id="email_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">Address</label>
+          <textarea class="form-control" id="address" aria-describedby="address_error"></textarea>
+          <div id="address_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="mb-3 form-check col-md-2">
+          <input type="checkbox" class="form-check-input" id="is_active">
+          <label class="form-check-label" for="is_active">Is Active</label>
+        </div>
+
+        <div class="mb-3 col-md-2">
+          <label for="id" class="form-label">ID</label>
+          <div id="id"></div>
+          <div id="id_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label for="created_at" class="form-label">Created At</label>
+          <div id="created_at"></div>
+          <div id="created_at_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label for="modified_at" class="form-label">Modified At</label>
+          <div id="modified_at"></div>
+          <div id="modified_at_error" class="form-text text-danger"></div>
+        </div>
+
+        <div class="buttons row">
+          <button onclick="clearFormFields()" class="btn btn-info col-md-2 mx-2">Clear</button>
+          <button onclick="createCustomer()" id="createBtn" class="btn btn-primary col-md-2 mx-2">Create</button>
+          <button onclick="updateCustomer()" id="updateBtn" class="btn btn-warning col-md-2 mx-2">Update</button>
+          <button onclick="deleteCustomer()" id="deleteBtn" class="btn btn-danger col-md-2 mx-2">Delete</button>
+
+        </div>
+
+      </form>
+    </div>
   </div>
 </main>
-<h1>Customer List</h1>
-<ul id="customerList"></ul>
+
 
 <script src="{% static 'js/list_customer.js' %}"></script>
 
